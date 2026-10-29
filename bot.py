@@ -14,13 +14,27 @@ Respond in user's language. Be detailed."""
 
 def get_model():
     models = client.models.list()
+    # Sirf instruct/chat models chahiye
+    preferred = ["instruct", "chat", "it"]
+    skip = ["whisper", "guard", "vision", "tts", "embed", "classif"]
+    
     for m in models.data:
-        if "llama" in m.id.lower() or "gemma" in m.id.lower() or "mixtral" in m.id.lower():
+        mid = m.id.lower()
+        if any(s in mid for s in skip):
+            continue
+        if any(p in mid for p in preferred):
+            print(f"Selected: {m.id}")
             return m.id
+    
+    # Fallback — pehla non-skip model
+    for m in models.data:
+        mid = m.id.lower()
+        if not any(s in mid for s in skip):
+            return m.id
+    
     return models.data[0].id
 
 MODEL = get_model()
-print(f"Using model: {MODEL}")
 
 async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     try:
