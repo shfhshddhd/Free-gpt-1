@@ -19,10 +19,12 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com",
+                "X-Title": "TelegramBot"
             },
             json={
-                "model": "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",
+                "model": "mistralai/mistral-7b-instruct:free",
                 "messages": [
                     {"role": "system", "content": SYSTEM},
                     {"role": "user", "content": msg}
@@ -30,7 +32,16 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             }
         )
         
-        reply = res.json()["choices"][0]["message"]["content"]
+        data = res.json()
+        logging.info(f"Response: {data}")
+        
+        if "choices" in data:
+            reply = data["choices"][0]["message"]["content"]
+        elif "error" in data:
+            reply = f"API Error: {data['error']['message']}"
+        else:
+            reply = f"Unknown response: {str(data)}"
+            
         await update.message.reply_text(reply)
         
     except Exception as e:
