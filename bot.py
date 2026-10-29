@@ -15,7 +15,7 @@ Respond in user's language. Be detailed."""
 async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     msg = update.message.text
     res = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="llama3-70b-8192",
         messages=[
             {"role": "system", "content": SYSTEM},
             {"role": "user", "content": msg}
