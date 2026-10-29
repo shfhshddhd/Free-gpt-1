@@ -24,7 +24,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
                 "X-Title": "TelegramBot"
             },
             json={
-                "model": "mistralai/mistral-7b-instruct:free",
+                "model": "openrouter/free",
                 "messages": [
                     {"role": "system", "content": SYSTEM},
                     {"role": "user", "content": msg}
